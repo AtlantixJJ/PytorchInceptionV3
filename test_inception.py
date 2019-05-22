@@ -99,8 +99,11 @@ x_tf = res[0]
 feature_tensorflow = res[-1][:, 0, 0, :]
 np.save("tensorflow_feature.npy", feature_tensorflow)
 
+print("=> Pytorch pool3:")
 print(feature_pytorch[0][:6])
+print("=> Tensorflow pool3:")
 print(feature_tensorflow[0][:6])
+print("=> Mean abs difference")
 print(np.abs(feature_pytorch - feature_tensorflow).mean())
 
 def get_tf_layer(name):
