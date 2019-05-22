@@ -1,7 +1,7 @@
 """
 A script to test Pytorch and Tensorflow InceptionV3 have consistent behavior.
 """
-import sys
+import sys, argparse
 sys.path.insert(0, ".")
 import numpy as np
 import tensorflow as tf
@@ -9,6 +9,10 @@ import torch
 from inception_origin import inception_v3
 from PIL import Image
 from tf_fid import *
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--load_path", default="", help="The path to changed pytorch inceptionv3 weight. Run change_statedict.py to obtain.")
+args = parser.parse_args()
 
 def check_or_download_inception(inception_path):
     ''' Checks if the path to the inception file is valid, or downloads
@@ -45,7 +49,10 @@ x_arr = (x_arr - 128) * 0.0078125
 x_torch = torch.from_numpy(x_arr.transpose(0, 3, 1, 2)).float().cuda()
 
 model = inception_v3(pretrained=True, aux_logits=False, transform_input=False)
-#model.load_state_dict(torch.load("pretrained/inception_v3_google.pth"))
+if len(args.load_path) > 1:
+    # default: pretrained/inception_v3_google.pth
+    print("=> Get changed weight from %s" % args.load_path)
+    model.load_state_dict(torch.load(args.load_path))
 model.cuda()
 model.eval()
 
@@ -56,8 +63,7 @@ if x_torch.size(2) != 299:
             mode='bilinear',
             align_corners=False)
 features = model.get_feature(x_torch)
-feature_pytorch = torch2numpy(features[-1])
-np.save("pytorch_feature.npy", feature_pytorch)
+feature_pytorch = features[-1].detach().cpu().numpy()
 
 inception_path = check_or_download_inception("pretrained")
 with tf.gfile.FastGFile("pretrained/classify_image_graph_def.pb", 'rb') as f:
@@ -95,7 +101,6 @@ sess.run(tf.global_variables_initializer())
 res = sess.run(target_layers, feed)
 x_tf = res[0]
 feature_tensorflow = res[-1][:, 0, 0, :]
-np.save("tensorflow_feature.npy", feature_tensorflow)
 
 print("=> Pytorch pool3:")
 print(feature_pytorch[0][:6])
