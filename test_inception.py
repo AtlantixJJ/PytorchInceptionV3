@@ -56,9 +56,7 @@ if x_torch.size(2) != 299:
             mode='bilinear',
             align_corners=False)
 features = model.get_feature(x_torch)
-feature_pytorch = features[-1].detach().cpu().numpy()
-print(feature_pytorch.shape)
-print(feature_pytorch[0])
+feature_pytorch = torch2numpy(features[-1])
 np.save("pytorch_feature.npy", feature_pytorch)
 
 inception_path = check_or_download_inception("pretrained")

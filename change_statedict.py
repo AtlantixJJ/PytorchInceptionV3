@@ -11,7 +11,7 @@ parser.add_argument("--save_path", help="The path to save new weight.")
 args = parser.parse_args()
 
 # the inception weight list
-f = open("script/namelist.txt").readlines()
+f = open("pretrained/namelist.txt").readlines()
 hnames = [i.strip().replace("/","_") for i in f]
 # the weight of tensorflow inception v3 should be in dump directory
 hfiles = [h5py.File("dump/" + h + ".h5") for h in hnames]
