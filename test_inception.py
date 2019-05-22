@@ -38,7 +38,7 @@ data_dir = "data/cifar10_test/"
 imgs_pil = [Image.open(open(data_dir + s, "rb")).resize((299,299)) for s in os.listdir(data_dir)]
 imgs = [np.asarray(img).astype("float32") for img in imgs_pil]
 x_arr = np.array(imgs)
-# TF InceptionV3 graph receive [0, 255] scale image
+# TF InceptionV3 graph use [0, 255] scale image
 feed = {'FID_Inception_Net/ExpandDims:0': x_arr}
 # This is identical to TF image transformation
 x_arr = (x_arr - 128) * 0.0078125
