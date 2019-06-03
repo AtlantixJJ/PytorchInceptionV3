@@ -8,7 +8,6 @@ import tensorflow as tf
 import torch
 from inception_origin import inception_v3
 from PIL import Image
-from tf_fid import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--load_path", default="", help="The path to changed pytorch inceptionv3 weight. Run change_statedict.py to obtain.")
