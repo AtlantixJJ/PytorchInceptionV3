@@ -39,7 +39,7 @@ torch.manual_seed(1)
 torch.cuda.manual_seed(1)
 
 data_dir = "data/cifar10_test/"
-imgs_pil = [Image.open(open(data_dir + s, "rb")).resize((299,299)) for s in os.listdir(data_dir)]
+imgs_pil = [Image.open(open(data_dir + s, "rb")).resize((299,299), mode=Image.BILINEAR) for s in os.listdir(data_dir)]
 imgs = [np.asarray(img).astype("float32") for img in imgs_pil]
 x_arr = np.array(imgs)
 # TF InceptionV3 graph use [0, 255] scale image
